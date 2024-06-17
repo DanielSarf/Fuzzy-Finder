@@ -3,12 +3,12 @@
 int BKTree::stringDistance(std::string s1, std::string s2)
 {
 	//Store lengths of strings
-	size_t l1 = s1.length();
-	size_t l2 = s2.length();
+	int l1 = s1.length();
+	int l2 = s2.length();
 
 	//Make 2D array of ints of l1xl2 size
 	int** distanceTable = new int* [l1 + 1];
-	for (size_t i = 0; i <= l1; i++)
+	for (int i = 0; i <= l1; i++)
 	{
 		distanceTable[i] = new int[l2 + 1];
 	}
@@ -28,9 +28,9 @@ int BKTree::stringDistance(std::string s1, std::string s2)
 	//Render 2D array
 	int track = 0;
 	int temp = 0;
-	for (size_t i = 1; i <= l1; i++)
+	for (int i = 1; i <= l1; i++)
 	{
-		for (size_t j = 1; j <= l2; j++)
+		for (int j = 1; j <= l2; j++)
 		{
 			if (s1[i - 1] == s2[j - 1])
 			{
@@ -51,7 +51,7 @@ int BKTree::stringDistance(std::string s1, std::string s2)
 	int distance = distanceTable[l1][l2];
 
 	//Deletes allocated memory for 2D array
-	for (size_t i = 0; i <= l1; i++)
+	for (int i = 0; i <= l1; i++)
 	{
 		delete[] distanceTable[i];
 	}

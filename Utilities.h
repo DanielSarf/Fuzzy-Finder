@@ -33,15 +33,15 @@ void makeStringAllLowercase(std::string &inputString)
 // 
 //Takes (by reference) string to tokenize as first parameter
 //Takes (by reference) string that constains delimiter(s)
-//Takes (by reference) size_t as index for the starting character of the next token
+//Takes (by reference) int as index for the starting character of the next token
 // 
 //Loop over string from starting index as nextTokenIndex comparing each character with each delimiter and if a delimiter is found,
 //determine the length of the token to be returned, then find the index of the string where the character is not one of the delimiter(s),
 //then set nextTokenIndex to that token and return the token that had its length determined
-std::string stringTokenize(std::string& inputString, std::string& delimiters, size_t& nextTokenIndex)
+std::string stringTokenize(std::string& inputString, std::string& delimiters, int& nextTokenIndex)
 {
 	//Length of input string
-	size_t inputStringLength = inputString.length();
+	int inputStringLength = inputString.length();
 
 	//Exception handling
 	if (nextTokenIndex >= inputStringLength || nextTokenIndex < 0)
@@ -50,7 +50,7 @@ std::string stringTokenize(std::string& inputString, std::string& delimiters, si
 	}
 
 	//Delimiter string may have multiple delimiters
-	size_t delimitersLength = delimiters.length();
+	int delimitersLength = delimiters.length();
 
 	//Shortcut if there are no delimiters
 	if (delimitersLength == 0)
@@ -59,10 +59,10 @@ std::string stringTokenize(std::string& inputString, std::string& delimiters, si
 	}
 
 	//Stores the value of nextTokenIndex at the start of this function
-	size_t startingIndex = nextTokenIndex;
+	int startingIndex = nextTokenIndex;
 
 	//This is the length of the token that will be returned, currently initialized to 0
-	size_t lengthOfToken = 0;
+	int lengthOfToken = 0;
 
 	//After a delimiter is found, check for the next time a delimiter is not found is done
 	//This counter tells how many times the current character was not one of the delimiters
@@ -72,10 +72,10 @@ std::string stringTokenize(std::string& inputString, std::string& delimiters, si
 	bool lengthOfTokenSet = false;
 
 	//Loop over all characters in inputString from starting index
-	for (size_t i = startingIndex; i < inputStringLength; i++)
+	for (int i = startingIndex; i < inputStringLength; i++)
 	{
 		//Loop over every delimiter for current character
-		for (size_t j = 0; j < delimitersLength; j++)
+		for (int j = 0; j < delimitersLength; j++)
 		{
 			//If the current character is one of the delimiter(s)
 			if (inputString[i] == delimiters[j])
@@ -124,7 +124,7 @@ std::string stringTokenize(std::string& inputString, std::string& delimiters, si
 }
 
 //Tokenizes each word in .txt file and inserts into tree
-void readTextFileIntoTree(BKTree& inputTree, std::string nameOfFile, bool isCaseSensitive = true)
+void readTextFileIntoTree(BKTree& inputTree, std::string nameOfFile)
 {
 	//Check if file is .txt file
 	if (nameOfFile.find_last_of(".txt") == std::string::npos)
@@ -151,16 +151,13 @@ void readTextFileIntoTree(BKTree& inputTree, std::string nameOfFile, bool isCase
 	std::string buffer = stringStream.str();
 
 	//Tokenize buffer and insert each word into tree using loop
-	std::string delimiters = " ,.\n\t:;(){}[]?!-";
-	size_t nextTokenIndex = 0;
+	std::string delimiters = " ,.\n\t\r:;(){}[]?!-";
+	int nextTokenIndex = 0;
 	std::string currentWord = stringTokenize(buffer, delimiters, nextTokenIndex);
 
 	while (!currentWord.empty())
 	{
-		if (!isCaseSensitive)
-		{
-			makeStringAllLowercase(currentWord);
-		}
+		makeStringAllLowercase(currentWord);
 
 		inputTree.insertWord(currentWord);
 

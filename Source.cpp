@@ -7,7 +7,7 @@
 #include "SLList.h"
 #include "BKTree.h"
 
-void printResults(std::shared_ptr<SLList<std::string>>, std::string, std::string, bool);
+void printResults(std::shared_ptr<SLList<std::string>>, std::string, std::string);
 
 int main()
 {
@@ -18,38 +18,24 @@ int main()
 	
 	getline(std::cin, nameOfFile);
 
-	//Set up case sensitive BK Tree
-	BKTree caseSensitiveTree;
+	std::cout << "\nMaking tree...\n\n";
 
-	std::cout << "\nMaking tree 1...\n\n";
-
-	//Since there are two BK Trees, multithreading is used
-	//Insert each word from file into tree
-	std::thread thread1(readTextFileIntoTree, std::ref(caseSensitiveTree), nameOfFile, true);
-	
-	//Set up case insensitive BK Tree
-	BKTree caseInsensitiveTree;
-
-	std::cout << "\nMaking tree 2...\n\n";
+	//Set up BK Tree
+	BKTree tree;
 
 	//Insert each word from file into tree
-	std::thread thread2(readTextFileIntoTree, std::ref(caseInsensitiveTree), nameOfFile, false);
-
-	//Wait for both threads
-	thread1.join();
-	thread2.join();
+	readTextFileIntoTree(tree, nameOfFile);
 
 	//If file is empty, exit the program
-	if(caseSensitiveTree.isEmpty())
+	if(tree.isEmpty())
 	{
-		std::cerr << "Trees are empty.";
+		std::cerr << "Tree is empty.";
 		
 		exit(1);
 	}
 
-	//Word to fuzzy search, if the search is case sensitive and maximum edit distance of word(s) returned
+	//Word to fuzzy search and maximum edit distance of word(s) returned
 	std::string wordToSearch;
-	bool isCaseSensitive;
 	int searchDistance;
 
 	//Shared pointer to list of strings that will be filled with search results
@@ -58,8 +44,7 @@ int main()
 
 	//Program loop
 	char keepRunning = 'y';
-	char isCaseSensitiveChoice = 'n';
-	while (keepRunning == 'y' || keepRunning == 'Y')
+	while (keepRunning == 'y')
 	{
 		//Clear console every loop
 		clearScreen();
@@ -69,34 +54,15 @@ int main()
 		std::cin >> wordToSearch;
 		std::cout << std::endl;
 
-		//Loop to ensure the user enters the correct option
-		do
-		{
-			//Ask the user if search should be case sensitive
-			std::cout << "Should the search be case sensitive? (y/n): ";
-			std::cin >> isCaseSensitiveChoice;
-		}
-		while (isCaseSensitiveChoice != 'y' && isCaseSensitiveChoice != 'n' && isCaseSensitiveChoice != 'Y' && isCaseSensitiveChoice != 'N');
-
-		isCaseSensitive = (isCaseSensitiveChoice == 'y' || isCaseSensitiveChoice == 'Y') ? true : false;
-
 		//Ask the user for maximum edit distance
 		std::cout << "\nEnter search distance for search: ";
 		std::cin >> searchDistance;
 
 		std::cout << "\nSearching tree...\n";
 
-		//Get potential word matches either caseSensitiveTree or caseInsensitiveTree. Search distance is set to searchDistance
-		if (isCaseSensitive)
-		{
-			listOfWords = caseSensitiveTree.fuzzySearch(wordToSearch, searchDistance);
-		}
-		else
-		{
-			makeStringAllLowercase(wordToSearch);
+		makeStringAllLowercase(wordToSearch);
 
-			listOfWords = caseInsensitiveTree.fuzzySearch(wordToSearch, searchDistance);
-		}
+		listOfWords = tree.fuzzySearch(wordToSearch, searchDistance);
 
 		//Next screen on console
 		clearScreen();
@@ -109,7 +75,7 @@ int main()
 		//If there are search results, display them
 		else
 		{
-			printResults(listOfWords, wordToSearch, nameOfFile, isCaseSensitive);
+			printResults(listOfWords, wordToSearch, nameOfFile);
 		}
 		
 		//Delete list of strings for next search query
@@ -119,16 +85,17 @@ int main()
 		{
 			std::cout << "\nWould you like to search again? (y/n): ";
 			std::cin >> keepRunning;
+			keepRunning = tolower(keepRunning);
 		}
-		while (keepRunning != 'y' && keepRunning != 'n' && keepRunning != 'Y' && keepRunning != 'N');
+		while (keepRunning != 'y' && keepRunning != 'n');
 	}
 	
-	system("pause>0");
+	std::cin.get();
 
 	return 0;
 }
 
-void printResults(std::shared_ptr<SLList<std::string>> listOfWords, std::string wordToSearch, std::string nameOfFile, bool isCaseSensitive = true)
+void printResults(std::shared_ptr<SLList<std::string>> listOfWords, std::string wordToSearch, std::string nameOfFile)
 {
 	//Either wordToSearch or one of the search results from the fuzzy search is displayed
 	std::string wordToDisplay;
@@ -205,9 +172,9 @@ void printResults(std::shared_ptr<SLList<std::string>> listOfWords, std::string 
 	stringStream << inputFile.rdbuf();
 
 	//Setting up string tokenizer that may be used later
-	std::string delimiters = " ,.\t:;(){}[]?!-";
+	std::string delimiters = " ,.\t\n\r:;(){}[]?!-";
 	std::string currentWord;
-	size_t nextTokenIndex = 0;
+	int nextTokenIndex = 0;
 
 	//Information that needs to be displayed on console
 	int numberOfOccurances = 0;
@@ -226,10 +193,7 @@ void printResults(std::shared_ptr<SLList<std::string>> listOfWords, std::string 
 
 		while (!currentWord.empty())
 		{
-			if (!isCaseSensitive)
-			{
-				makeStringAllLowercase(currentWord);
-			}
+			makeStringAllLowercase(currentWord);
 
 			//Keeps tracks of what number the current word is on current line
 			numberOfWordsOnLine++;
