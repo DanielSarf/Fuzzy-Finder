@@ -2,21 +2,21 @@
 #include <string>
 #include <thread>
 #include <memory>
+#include <vector>
 
 #include "Utilities.h"
-#include "SLList.h"
 #include "BKTree.h"
 
-void printResults(std::shared_ptr<SLList<std::string>>, std::string, std::string);
+void printResults(std::vector<std::string>&, std::string, std::string);
 
 int main()
 {
 	//Ask user to specify file
-	std::string nameOfFile;
+	std::string pathToFile;
 
 	std::cout << "Please specify a txt file (you may specify file with directory): ";
 	
-	getline(std::cin, nameOfFile);
+	getline(std::cin, pathToFile);
 
 	std::cout << "\nMaking tree...\n\n";
 
@@ -24,7 +24,7 @@ int main()
 	BKTree tree;
 
 	//Insert each word from file into tree
-	readTextFileIntoTree(tree, nameOfFile);
+	readTextFileIntoTree(tree, pathToFile);
 
 	//If file is empty, exit the program
 	if(tree.isEmpty())
@@ -38,9 +38,9 @@ int main()
 	std::string wordToSearch;
 	int searchDistance;
 
-	//Shared pointer to list of strings that will be filled with search results
+	//Vector of strings that will be filled with search results
 	//This is to avoid memory leaks
-	std::shared_ptr<SLList<std::string>> listOfWords;
+	std::vector<std::string> vectorOfWords;
 
 	//Program loop
 	char keepRunning = 'y';
@@ -62,23 +62,23 @@ int main()
 
 		makeStringAllLowercase(wordToSearch);
 
-		listOfWords = tree.fuzzySearch(wordToSearch, searchDistance);
+		vectorOfWords = tree.fuzzySearch(wordToSearch, searchDistance);
 
 		//Next screen on console
 		clearScreen();
 
 		//If there are no search results, ask user to increase search distance
-		if (listOfWords->isEmpty())
+		if (vectorOfWords.empty())
 		{
 			std::cout << "No word match found, please increase search distance\n";
 		}
 		//If there are search results, display them
 		else
 		{
-			printResults(listOfWords, wordToSearch, nameOfFile);
+			printResults(vectorOfWords, wordToSearch, pathToFile);
 		}
 		
-		//Delete list of strings for next search query
+		//Delete vector of strings for next search query
 
 		//Loop to ensure the user enters the correct option
 		do
@@ -95,15 +95,15 @@ int main()
 	return 0;
 }
 
-void printResults(std::shared_ptr<SLList<std::string>> listOfWords, std::string wordToSearch, std::string nameOfFile)
+void printResults(std::vector<std::string>& vectorOfWords, std::string wordToSearch, std::string nameOfFile)
 {
 	//Either wordToSearch or one of the search results from the fuzzy search is displayed
 	std::string wordToDisplay;
 
 	//Check if wordToSearch is present in search results, and set wordToDisplay to it if it is present
-	for (int i = 0; i < listOfWords->getLength(); i++)
+	for (int i = 0; i < vectorOfWords.size(); i++)
 	{
-		if (!wordToSearch.compare(listOfWords->getAtPos(i)))
+		if (!wordToSearch.compare(vectorOfWords.at(i)))
 		{
 			wordToDisplay.assign(wordToSearch);
 
@@ -117,7 +117,7 @@ void printResults(std::shared_ptr<SLList<std::string>> listOfWords, std::string 
 		std::cout << "Did not find \"" << wordToSearch << "\" in " << nameOfFile;
 
 		//Check if there were no search results
-		if (listOfWords->getLength() == 0)
+		if (vectorOfWords.size() == 0)
 		{
 			std::cout << "\n\nDid not find any similar words, please increase search distance";
 
@@ -128,20 +128,20 @@ void printResults(std::shared_ptr<SLList<std::string>> listOfWords, std::string 
 		std::cout << "\n\nDid you mean: \n";
 
 		//Display search results in a numbered fashion
-		for (int i = 0; i < listOfWords->getLength(); i++)
+		for (int i = 0; i < vectorOfWords.size(); i++)
 		{
-			std::cout << std::endl << '\t' << (i + 1) << ": " << listOfWords->getAtPos(i);
+			std::cout << std::endl << '\t' << (i + 1) << ": " << vectorOfWords.at(i);
 		}
 
 		int choice = 0;
 		
 		//Loop to ensure the user enters the correct option
-		while (choice <= 0 || choice > listOfWords->getLength())
+		while (choice <= 0 || choice > vectorOfWords.size())
 		{
 			std::cout << "\n\nChoice: ";
 			std::cin >> choice;
 
-			if (choice <= 0 || choice > listOfWords->getLength())
+			if (choice <= 0 || choice > vectorOfWords.size())
 			{
 				std::cerr << "\n\nError: Choice is out of range";
 
@@ -149,7 +149,7 @@ void printResults(std::shared_ptr<SLList<std::string>> listOfWords, std::string 
 			else
 			{
 				//Set wordToDisplay to the chosen word
-				wordToDisplay.assign(listOfWords->getAtPos(choice - 1));
+				wordToDisplay.assign(vectorOfWords.at(choice - 1));
 			}
 		}
 	}

@@ -10,7 +10,7 @@ class BKTreeNode
 private:
 	//The word represented by the BKTreeNode
 	std::string word;
-	//Point to BKMap which stores list of children with unique levenshtein distances
+	//Point to BKMap which stores vector of children with unique levenshtein distances
 	BKMap* children;
 	//Stores levenshtein distance between word data-member and parent node's word data-member
 	int distanceFromParent;

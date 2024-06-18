@@ -2,10 +2,10 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <vector>
+#include <algorithm>
 
 #include "BKTreeNode.h"
-#include "SLListNode.h"
-#include "SLList.h"
 
 class BKTree
 {
@@ -26,7 +26,7 @@ public:
 	void insertWord(std::string);
 
 	//Searches for words within BK Tree which are in 0 - tolerance (inclusive) levenshtein distance of search query string 
-	std::shared_ptr<SLList<std::string>> fuzzySearch(std::string, int);
+	std::vector<std::string> fuzzySearch(std::string, int);
 
 	//Looks for the word to be deleted in the tree and sets isDeleted bool of that word's node to true
 	void deleteWord(std::string);

@@ -9,7 +9,7 @@
 
 void clearScreen()
 {
-#ifdef WINDOWS
+#ifdef _WIN32
     std::system("cls");
 #else
     // Assume POSIX
@@ -124,10 +124,10 @@ std::string stringTokenize(std::string& inputString, std::string& delimiters, in
 }
 
 //Tokenizes each word in .txt file and inserts into tree
-void readTextFileIntoTree(BKTree& inputTree, std::string nameOfFile)
+void readTextFileIntoTree(BKTree& inputTree, std::string pathToFile)
 {
 	//Check if file is .txt file
-	if (nameOfFile.find_last_of(".txt") == std::string::npos)
+	if (pathToFile.find_last_of(".txt") == std::string::npos)
 	{
 		std::cerr << "Error: File is not .txt file\n";
 
@@ -135,7 +135,7 @@ void readTextFileIntoTree(BKTree& inputTree, std::string nameOfFile)
 	}
 
 	//Open .txt file
-	std::ifstream inputFile(nameOfFile);
+	std::ifstream inputFile(pathToFile);
 
 	//Check if file exists
 	if (!inputFile)

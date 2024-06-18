@@ -119,32 +119,32 @@ void BKTree::insertWord(std::string inputWord)
 	currentNode->addChild(newNode);
 }
 
-std::shared_ptr<SLList<std::string>> BKTree::fuzzySearch(std::string inputWord, int tolerance)
+std::vector<std::string> BKTree::fuzzySearch(std::string inputWord, int tolerance)
 {
-	//A new empty list is created
-	std::shared_ptr<SLList<std::string>> listOfWords (new SLList<std::string>);
+	//A new empty vector for storing words and distances is created
+	std::vector<std::pair<std::string, int>> vectorOfWordsAndTheirDistances;
 
-	//If the tree is empty, then return an empty list
+	//If the tree is empty, then return an empty vector
 	if (isEmpty())
 	{
-		return listOfWords;
+		return std::vector<std::string>();
 	}
 
-	//A list of nodes to be searched is made
-	SLList<BKTreeNode*> listOfCandidateNodes;
+	//A vector of nodes to be searched is made
+	std::vector<BKTreeNode*> vectorOfCandidateNodes;
 
 	//First node to search is the root node
-	listOfCandidateNodes.insertBeg(root);
+	vectorOfCandidateNodes.emplace(vectorOfCandidateNodes.begin(), root);
 
-	BKTreeNode* currentNode, * currentChildNode;
+	BKTreeNode* currentNode, *currentChildNode;
 
 	int currentDistance, tolerance1, tolerance2;
 
 	//Loop till there are no nodes remaining that are to be searched
-	while (!listOfCandidateNodes.isEmpty())
+	while (!vectorOfCandidateNodes.empty())
 	{
-		//Get first node in listOfCandidatesNodes list
-		currentNode = listOfCandidateNodes.getHead()->getData();
+		//Get first node in vectorOfCandidatesNodes vector
+		currentNode = vectorOfCandidateNodes.front();
 
 		//Calculate the levenshtein distance between current node's word and inputWord
 		currentDistance = stringDistance(currentNode->getWord(), inputWord);
@@ -158,25 +158,39 @@ std::shared_ptr<SLList<std::string>> BKTree::fuzzySearch(std::string inputWord, 
 		{
 			currentChildNode = currentNode->getChildAtDistance(i);
 
-			//If a child is found, insert it into the listOfCandidateNodes list
+			//If a child is found, insert it into the vectorOfCandidateNodes vector
 			if (currentChildNode != nullptr)
 			{
-				listOfCandidateNodes.insertEnd(currentChildNode);
+				vectorOfCandidateNodes.emplace_back(currentChildNode);
 			}
 		}
 
-		//Insert into the listOfWords list if the levenshtein distance between the current word and inputWord is below or equal to the tolerance 
+		//Insert into the vectorOfWords vector if the levenshtein distance between the current word and inputWord is below or equal to the tolerance 
 		if (currentDistance <= tolerance && !currentNode->isDeleted())
 		{
-			listOfWords->insertEnd(currentNode->getWord());
+			vectorOfWordsAndTheirDistances.emplace_back(std::pair<std::string, int>(currentNode->getWord(), currentDistance));
 		}
 		
-		//Delete current node from the listOfCandidateNodes list
-		listOfCandidateNodes.deleteBeg();
+		//Delete current node from the vectorOfCandidateNodes vector
+		vectorOfCandidateNodes.erase(vectorOfCandidateNodes.begin());
+	}
+
+	// Sort the wordDistances vector based on the distances
+	std::sort(vectorOfWordsAndTheirDistances.begin(), vectorOfWordsAndTheirDistances.end(), [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+		return a.second < b.second;
+		});
+
+	//A new empty vector for storing words and distances is created
+	std::vector<std::string> vectorOfWords;
+
+	// Insert the sorted words into the vectorOfWords vector
+	for (const auto& wordAndDistance : vectorOfWordsAndTheirDistances)
+	{
+		vectorOfWords.emplace_back(wordAndDistance.first);
 	}
 
 	//Return the search results
-	return listOfWords;
+	return vectorOfWords;
 }
 
 void BKTree::deleteWord(std::string inputWord)
