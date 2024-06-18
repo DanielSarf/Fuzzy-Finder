@@ -10,7 +10,7 @@ This project was assigned to me by my DSA teacher in the 4th Semester. The goal 
 
 - Fast searching within documents after tree is built
 - Results are sorted by how closely they match your search term
-- Get exact location of where the chosen result occurs within `.txt` document
+- Get exact location of where the chosen result occurs within your document
 - Error handling
 - Supports Windows and Linux
 
