@@ -14,7 +14,18 @@ This project was assigned to me by my DSA teacher in the 4th Semester. The goal 
 - Error handling
 - Supports Windows and Linux
 
-## Compilation
+## Getting Started
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/DanielSarf/Fuzzy-Finder.git
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd Fuzzy-Finder
+   ```
+
+## Running on Linux
 
 To compile on Linux, use the following command:
 
@@ -23,8 +34,13 @@ g++ -g BKMap.cpp BKTree.cpp BKTreeNode.cpp Source.cpp -o ./FuzzySearch.o
 ```
 
 This command compiles multiple source files into an executable named `FuzzySearch.o`.
+Simply run the executable, using the following command:
 
-## Running the Project on Windows
+```sh
+./FuzzySearch.o
+```
+
+## Running on Windows
 
 To run this project on Windows using Visual Studio, follow these steps:
 
