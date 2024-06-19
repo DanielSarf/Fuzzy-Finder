@@ -4,7 +4,7 @@
 
 **Easily search your `.txt` files with this console program that finds near matches to your search term. This tool helps you find words and phrases even if they contain typos, making it perfect for quickly locating information in your files.
 The distance metric used to find near matches is levenshtein distance.
-This project was assigned to me by my DSA teacher in the 4th Semester. The goal was to use an efficient method (Data structure and/or algorithm) to find near matches to the search string from a specified text file.**
+This project was assigned to me by my DSA teacher in the 4th Semester. The goal was to use an efficient method (Data Structure and/or Algorithm) to find near matches to the search string from a specified text file.**
 
 ## Features
 
