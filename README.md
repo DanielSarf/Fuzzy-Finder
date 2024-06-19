@@ -81,7 +81,9 @@ After running the executable, follow these steps:
    - The program will then display all exact locations of the chosen word within your document, showing both the line number and the word number.
 
 ## Screenshots
+Example use case: Finding the word "structure" in a `.txt` document, but it is misspelled as "Struckter".
 
+![Example Use Case](media/screenshots_combined.png)
 
 ## License
 
