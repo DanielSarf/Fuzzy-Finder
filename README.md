@@ -10,7 +10,7 @@ This project was assigned to me by my DSA teacher in the 4th Semester. The goal 
 
 - Fast searching within documents after tree is built
 - Results are sorted by how closely they match your search term
-- Get exact location of where the chosen result occurs within your document
+- Get the exact location of where the chosen result occurs within your document
 - Error handling
 - Supports Windows and Linux
 
@@ -60,6 +60,25 @@ To run this project on Windows using Visual Studio, follow these steps:
 
 ## How to use
 
+After running the executable, follow these steps:
+
+1. **Specify the Path of the File:**
+   - When prompted, enter the full path to the `.txt` file you want to search within.
+
+2. **Enter the Search Term:**
+   - Type the word or phrase you're looking for. This can include words with typos or slight variations.
+
+3. **Set the Maximum Search Distance:**
+   - Input the maximum Levenshtein distance for the search. A higher number allows for more typos in the search term.
+
+4. **Review the Results:**
+   - The program will display a list of results sorted by how closely they match your search term. Each result is associated with a number.
+
+5. **Select the Desired Result:**
+   - Type the number associated with the word or phrase that best matches what you were looking for.
+
+6. **View Exact Locations:**
+   - The program will then display all exact locations of the chosen word within your document, showing both the line number and the word number.
 
 ## Screenshots
 
